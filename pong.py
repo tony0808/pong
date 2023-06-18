@@ -46,18 +46,46 @@ class Pong:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
+            elif event.type == pygame.KEYDOWN:
+                self.handle_keydown_events(event)
+            elif event.type == pygame.KEYUP:
+                self.handle_event_keyup_events(event)
     
+    def handle_keydown_events(self, event):
+        if event.key == pygame.K_UP:
+            self.right_player.speed -= Player.SPEED
+        elif event.key == pygame.K_DOWN:
+            self.right_player.speed += Player.SPEED
+        elif event.key == pygame.K_w:
+            self.left_player.speed -= Player.SPEED
+        elif event.key == pygame.K_s:
+            self.left_player.speed += Player.SPEED
+
+    def handle_event_keyup_events(self, event):
+        if event.key == pygame.K_UP:
+            self.right_player.speed += Player.SPEED
+        elif event.key == pygame.K_DOWN:
+            self.right_player.speed -= Player.SPEED
+        elif event.key == pygame.K_w:
+            self.left_player.speed += Player.SPEED
+        elif event.key == pygame.K_s:
+            self.left_player.speed -= Player.SPEED
+
     def draw_and_update_window(self):
         self.draw_window()
         self.update_window()
 
     def draw_window(self):
         self.screen.window.fill(Screen.COLOR)
-        self.left_player.draw(self.screen.window)
-        self.right_player.draw(self.screen.window)
-        self.ball.draw(self.screen.window)
+        self.draw_players()
+        self.ball.draw(self.screen.window, self.left_player, self.right_player)
         pygame.draw.aaline(self.screen.window, (255, 255, 255), (Screen.WIDTH/2, 0), (Screen.WIDTH/2, Screen.HEIGHT))
 
     def update_window(self):
         pygame.display.flip()
         self.clock.tick(self.FPS)
+    
+    def draw_players(self):
+        self.left_player.draw(self.screen.window)
+        self.right_player.draw(self.screen.window)
+        
