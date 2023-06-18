@@ -12,6 +12,7 @@ class Player:
         self.x = x
         self.y = y
         self.speed = 0
+        self.score = 0
         self.rect = pygame.Rect(x, y, Player.WIDTH, Player.HEIGHT)
 
     def draw(self, window):

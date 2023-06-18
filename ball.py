@@ -26,11 +26,20 @@ class Ball:
     def check_collisions(self, left_player, right_player):
         if self.rect.bottom >= Screen.HEIGHT or self.rect.top <= 0:
             Ball.YSPEED *= -1
-        if self.rect.left <= 0 or self.rect.right >= Screen.WIDTH:
-            self.restart_position()
         if self.rect.colliderect(left_player.rect) or self.rect.colliderect(right_player.rect):
             Ball.XSPEED *= -1
+
+        if self.rect.left <= 0:
+            self.update_score(right_player)
+        elif self.rect.right >= Screen.WIDTH:
+            self.update_score(left_player)
+
+        if self.rect.left <= 0 or self.rect.right >= Screen.WIDTH:
+            self.restart_position()
     
+    def update_score(self, player):
+        player.score += 1
+
     def restart_position(self):
         x = (Screen.WIDTH - Ball.WIDTH) / 2
         y = (Screen.HEIGHT - Ball.HEIGHT) / 2
