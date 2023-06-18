@@ -19,6 +19,8 @@ class Ball:
         self.restart_waiting_time = 3000
         self.restart_starting_time = 0
         self.font = pygame.font.Font('freesansbold.ttf', 32)
+        self.pong_sound = pygame.mixer.Sound('pong.ogg')
+        self.score_sound = pygame.mixer.Sound('score.ogg')
 
     def draw(self, window, left_player, right_player):
         self.check_restart_mode(window)
@@ -65,19 +67,26 @@ class Ball:
             self.rect.y += Ball.YSPEED
     
     def check_collisions(self, left_player, right_player):
-        self.check_top_and_bottom_collisions(left_player, right_player)
-        self.check_left_and_right_collisions(left_player, right_player)
+        self.check_vertical_window_collisions()
+        self.check_player_collisions(left_player, right_player)
+        self.check_horizontal_window_collisions(left_player, right_player)
     
-    def check_top_and_bottom_collisions(self, left_player, right_player):
+    def check_vertical_window_collisions(self):
         if self.rect.bottom >= Screen.HEIGHT or self.rect.top <= 0:
+            pygame.mixer.Sound.play(self.pong_sound)
             Ball.YSPEED *= -1
+
+    def check_player_collisions(self, left_player, right_player):
         if self.rect.colliderect(left_player.rect) or self.rect.colliderect(right_player.rect):
+            pygame.mixer.Sound.play(self.pong_sound)
             Ball.XSPEED *= -1
 
-    def check_left_and_right_collisions(self, left_player, right_player):
+    def check_horizontal_window_collisions(self, left_player, right_player):
         if self.rect.left <= 0:
+            pygame.mixer.Sound.play(self.score_sound)
             self.update_score(right_player)
         elif self.rect.right >= Screen.WIDTH:
+            pygame.mixer.Sound.play(self.score_sound)
             self.update_score(left_player)
         if self.rect.left <= 0 or self.rect.right >= Screen.WIDTH:
             self.restart_ball_movement()
